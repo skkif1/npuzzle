@@ -1,4 +1,4 @@
-package input;
+package src.input;
 
 public class InputMangerException extends RuntimeException
 {
