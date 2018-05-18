@@ -1,8 +1,9 @@
-package src.input;
+package src.input.map;
 
 import java.util.ArrayList;
 import java.util.List;
 import javafx.util.Pair;
+import src.input.algo.IHeruisticFunction;
 import static java.lang.System.*;
 
 public class Map {
@@ -13,31 +14,50 @@ public class Map {
 
     private static int size;
 
-    // private final  int coast;
-
     private static Map finalState = null;
 
     private final String internal;
 
+    private IHeruisticFunction heruisticFunction;
+
+    private int coast = 0;
+
+    private int h = 0;
+
     private int[][] map;
+
+    private Map parent = null;
 
     private int iteratorI = 0;
 
     private int iteratorJ = 0;
 
-    public Map(int[][] map, int mapSize)
-    {
+    public Map(int[][] map, int mapSize) {
         this.map = map;
-        this.internal = createInternalString();
         size = mapSize;
-        createInternalString();
+        this.internal = createInternalString();
         findEmptyCell();
+    }
+
+    public Map(int[][] map, int mapSize, Map parent) {
+        this(map, mapSize);
+        this.h = parent.h++;
+        this.parent = parent;
+        this.heruisticFunction = parent.heruisticFunction;
+        calculateCoast();
+    }
+
+    private void calculateCoast()
+    {
+        coast = h + heruisticFunction.calculateGCoast(this);
     }
 
     private String createInternalString() {
         String temp = "";
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
                 temp += (String.valueOf(map[i][j]));
             }
         }
@@ -53,6 +73,10 @@ public class Map {
                 }
             }
         }
+    }
+
+    public static Map getFinalState() {
+        return finalState;
     }
 
     public static void generateFinalState() {
@@ -101,6 +125,19 @@ public class Map {
         return stateToSearch;
     }
 
+    public String getInternal() {
+        return internal;
+    }
+
+    public int[][] getMap() {
+        return map;
+    }
+
+    public void setHeruisticFunction(IHeruisticFunction heruisticFunction) {
+        this.heruisticFunction = heruisticFunction;
+        calculateCoast();
+    }
+
     public List<Map> getPossibleMoves() {
         List<Map> possibleMoves = new ArrayList<>();
 
@@ -113,7 +150,7 @@ public class Map {
         if (iteratorJ + 1 < size) {
             possibleMoves.add(createChild(iteratorI, iteratorJ + 1));
         }
-        if (iteratorJ + 1 >= 0) {
+        if (iteratorJ - 1 >= 0) {
             possibleMoves.add(createChild(iteratorI, iteratorJ - 1));
         }
         return possibleMoves;
@@ -128,15 +165,19 @@ public class Map {
 
         newMap[iterI][iterJ] = 0;
         newMap[iteratorI][iteratorJ] = map[iterI][iterJ];
-        return new Map(newMap, size);
+        return new Map(newMap, size, this);
     }
 
-    public void printMap()
-    {
+    public int getCoast() {
+        return coast;
+    }
+
+    public void printMap() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 out.print(map[i][j] + " ");
             }
+
             out.println();
         }
     }
