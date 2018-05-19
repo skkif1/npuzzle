@@ -1,6 +1,8 @@
 package src.input.map;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javafx.util.Pair;
 import src.input.algo.IHeruisticFunction;
@@ -180,6 +182,41 @@ public class Map {
 
             out.println();
         }
+    }
+
+    public void printParentLine()
+    {
+        LinkedList<Map> line = new LinkedList<>();
+
+        Map temp = this;
+        while (temp != null)
+        {
+            line.add(temp);
+            temp = temp.parent;
+        }
+        for (Iterator<Map> it = line.descendingIterator(); it.hasNext(); )
+        {
+            Map state = it.next();
+            state.printMap();
+            System.out.println("///////////");
+        }
+    }
+
+    public boolean isSolvable()
+    {
+        char internalArr[] = internal.toCharArray();
+        int inversions = 0;
+        for (int i = 0; i < internalArr.length; i++) {
+
+            for (int j = i + 1 ; j < internalArr.length; j++)
+            {
+                if (internalArr[j] > internalArr[i])
+                {
+                    inversions++;
+                }
+            }
+        }
+        return inversions % 2 == 0;
     }
 
     @Override
