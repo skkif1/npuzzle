@@ -1,14 +1,23 @@
-package src.input.map;
+package src.map;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.util.Pair;
-import src.input.algo.IHeruisticFunction;
+import org.apache.commons.lang3.StringUtils;
+import src.algo.IHeruisticFunction;
 import static java.lang.System.*;
 
-public class Map {
+/*
+*  Represents the state of the Map
+*  every instance has a link to its parent
+*  Do not use PuzzleMap constructor more than one time
+*  generate the G of A* algo for current state
+*
+* */
+
+public class PuzzleMap implements Comparable {
 
     private static final int EMPTY_CELL = 0;
 
@@ -16,7 +25,7 @@ public class Map {
 
     private static int size;
 
-    private static Map finalState = null;
+    private static PuzzleMap finalState = null;
 
     private final String internal;
 
@@ -28,20 +37,13 @@ public class Map {
 
     private int[][] map;
 
-    private Map parent = null;
+    private PuzzleMap parent = null;
 
     private int iteratorI = 0;
 
     private int iteratorJ = 0;
 
-    public Map(int[][] map, int mapSize) {
-        this.map = map;
-        size = mapSize;
-        this.internal = createInternalString();
-        findEmptyCell();
-    }
-
-    public Map(int[][] map, int mapSize, Map parent) {
+    public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent) {
         this(map, mapSize);
         this.h = parent.h++;
         this.parent = parent;
@@ -49,17 +51,27 @@ public class Map {
         calculateCoast();
     }
 
-    private void calculateCoast()
-    {
-        coast = h + heruisticFunction.calculateGCoast(this);
+    /*
+    *   Call for this constructor only once than call
+     *
+     *   getPossibleMoves() to generate new Maps
+    *
+    * */
+    public PuzzleMap(int[][] map, int mapSize) {
+        this.map = map;
+        size = mapSize;
+        this.internal = createInternalString();
+        findEmptyCell();
+    }
+
+    private void calculateCoast() {
+        coast = h + heruisticFunction.calculateGCoast(this, finalState);
     }
 
     private String createInternalString() {
         String temp = "";
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 temp += (String.valueOf(map[i][j]));
             }
         }
@@ -77,12 +89,12 @@ public class Map {
         }
     }
 
-    public static Map getFinalState() {
+    public static PuzzleMap getFinalState() {
         return finalState;
     }
 
     public static void generateFinalState() {
-        finalState = new Map(findFinalState(), size);
+        finalState = new PuzzleMap(findFinalState(), size);
     }
 
     private static Pair<Integer, Integer> getDirection(int i, int j, int[][] stateToSearch) {
@@ -127,6 +139,14 @@ public class Map {
         return stateToSearch;
     }
 
+    /*
+    *   return state of the current map in string
+     *   1  2  3
+     *   8     4
+     *   7  6  5
+     *
+     *   will return 12345678
+    * */
     public String getInternal() {
         return internal;
     }
@@ -140,8 +160,8 @@ public class Map {
         calculateCoast();
     }
 
-    public List<Map> getPossibleMoves() {
-        List<Map> possibleMoves = new ArrayList<>();
+    public List<PuzzleMap> getPossibleMoves() {
+        List<PuzzleMap> possibleMoves = new ArrayList<>();
 
         if (iteratorI + 1 < size) {
             possibleMoves.add(createChild(iteratorI + 1, iteratorJ));
@@ -158,7 +178,7 @@ public class Map {
         return possibleMoves;
     }
 
-    private Map createChild(int iterI, int iterJ) {
+    private PuzzleMap createChild(int iterI, int iterJ) {
         int[][] newMap = new int[size][size];
 
         for (int i = 0; i < size; i++) {
@@ -167,12 +187,31 @@ public class Map {
 
         newMap[iterI][iterJ] = 0;
         newMap[iteratorI][iteratorJ] = map[iterI][iterJ];
-        return new Map(newMap, size, this);
+        return new PuzzleMap(newMap, size, this);
     }
 
     public int getCoast() {
         return coast;
     }
+
+    public void printParentLine() {
+        LinkedList<PuzzleMap> line = new LinkedList<>();
+
+        PuzzleMap temp = this;
+        while (temp != null) {
+            line.add(temp);
+            temp = temp.parent;
+        }
+        for (Iterator<PuzzleMap> it = line.descendingIterator(); it.hasNext(); ) {
+            PuzzleMap state = it.next();
+            state.printMap();
+            System.out.println("///////////");
+        }
+    }
+
+    /*
+    *   should print to std path which show result
+    * */
 
     public void printMap() {
         for (int i = 0; i < size; i++) {
@@ -184,48 +223,54 @@ public class Map {
         }
     }
 
-    public void printParentLine()
-    {
-        LinkedList<Map> line = new LinkedList<>();
-
-        Map temp = this;
-        while (temp != null)
-        {
-            line.add(temp);
-            temp = temp.parent;
-        }
-        for (Iterator<Map> it = line.descendingIterator(); it.hasNext(); )
-        {
-            Map state = it.next();
-            state.printMap();
-            System.out.println("///////////");
-        }
-    }
-
-    public boolean isSolvable()
-    {
-        char internalArr[] = internal.toCharArray();
+    /*
+    *   should say if current map is solvable (not working)
+    * */
+    public boolean isSolvable() {
+        String temp = internal;
+        temp = StringUtils.replace(temp, "0", "");
+        char internalArr[] = temp.toCharArray();
         int inversions = 0;
         for (int i = 0; i < internalArr.length; i++) {
 
-            for (int j = i + 1 ; j < internalArr.length; j++)
-            {
-                if (internalArr[j] > internalArr[i])
-                {
+            for (int j = i + 1; j < internalArr.length; j++) {
+                if (internalArr[j] > internalArr[i]) {
                     inversions++;
                 }
             }
         }
-        return inversions % 2 == 0;
+
+        boolean res = false;
+
+        if ((size % 2 != 0) && (inversions % 2 == 0)) {
+            res = true;
+        } else if ((size % 2 == 0)) {
+            if (iteratorI % 2 == 0 && inversions % 2 == 1)
+                res = true;
+            if (iteratorI % 2 == 1 && inversions % 2 == 0)
+                res = true;
+        }
+        return res;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Map && internal.equals(((Map) obj).internal);
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof PuzzleMap)) return false;
+
+        PuzzleMap map = (PuzzleMap) o;
+
+        return internal.equals(map.internal);
     }
 
     @Override
     public int hashCode() {
         return internal.hashCode();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return (this.coast - ((PuzzleMap) o).coast) < 1 ? -1 : 1;
     }
 }
