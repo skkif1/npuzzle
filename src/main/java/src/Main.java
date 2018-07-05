@@ -1,15 +1,15 @@
 package src;
 
-import src.algo.SimpleHeruisticFunction;
+import src.algo.SimpleHeuristicFunction;
 import src.input.InputManager;
 import src.map.PuzzleMap;
 
 public class Main
 {
 
-    private static final String macOS = "/Users/omotyliu/testMap1";
+    private static final String macOS = "/Users/mivanov/testMap";
 
-    private static final String windowsOS = "C:\\Users\\Oleksandr\\Desktop\\UNIT\\testMap.txt";
+    private static final String windowsOS = "C:\\Max\\testMap";
 
     public static void main(String[] args)
     {
@@ -22,7 +22,7 @@ public class Main
         PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());
         initialState.printMap();
 
-        initialState.setHeruisticFunction(new SimpleHeruisticFunction());
+        initialState.setHeruisticFunction(new SimpleHeuristicFunction());
 
         System.out.println("\nget possible moves\n");
 
