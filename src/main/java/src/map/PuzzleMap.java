@@ -6,8 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javafx.util.Pair;
-import org.apache.commons.lang3.StringUtils;
-import src.algo.IHeruisticFunction;
+import src.algo.IHeuristicFunction;
 
 import static java.lang.System.*;
 
@@ -31,7 +30,7 @@ public class PuzzleMap implements Comparable {
 
 	private final String internal;
 
-	private IHeruisticFunction heuristicFunction;
+	private IHeuristicFunction heuristicFunction;
 
 	private int coast = 0;
 
@@ -157,7 +156,7 @@ public class PuzzleMap implements Comparable {
 		return map;
 	}
 
-	public void setHeuristicFunction(IHeruisticFunction heuristicFunction) {
+	public void setHeuristicFunction(IHeuristicFunction heuristicFunction) {
 		this.heuristicFunction = heuristicFunction;
 		calculateCoast();
 	}
@@ -253,23 +252,47 @@ public class PuzzleMap implements Comparable {
 //            return (inv_puzzl % 2 == inv_goal % 2)
 
 	public boolean isSolvable() {
-		List<Integer> finalStateList = new ArrayList<>();
-		List<Integer> currentStateList = new ArrayList<>();
+		int[] finalStateArray = new int[size * size];
+		int[] currentStateArray = new int[size * size];
+		int k = 0;
 		for (int[] ints : map) {
 			for (int i : ints) {
-				currentStateList.add(i);
+				currentStateArray[k++] = i;
 			}
 		}
+		k = 0;
 		for (int[] ints : finalState.map) {
 			for (int i : ints) {
-				finalStateList.add(i);
+				finalStateArray[k++] = i;
 			}
 		}
-		return true;
+		int currentInv = getInversionsCount(currentStateArray);
+		int finalInv = getInversionsCount(finalStateArray);
+		if (size % 2 == 0) {
+			for (int i = 0; i < finalStateArray.length; i++) {
+				if (finalStateArray[i] == 0) {
+					finalInv += i;
+					break;
+				}
+			}
+			for (int i = 0; i < currentStateArray.length; i++) {
+				if (currentStateArray[i] == 0) {
+					currentInv += i;
+					break;
+				}
+			}
+		}
+		return finalInv % 2 == currentInv % 2;
 	}
 
-	private int inversionsCount(int[][] map) {
+	private int getInversionsCount(int[] map) {
 		int inversions = 0;
+		for (int i = 0; i < map.length - 1; i++) {
+			for (int j = i + 1; j < map.length; j++) {
+				if (map[i] == 0 || map[j] == 0) continue;
+				if (map[i] > map[j]) inversions++;
+			}
+		}
 		return inversions;
 	}
 

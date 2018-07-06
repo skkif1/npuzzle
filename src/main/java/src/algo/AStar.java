@@ -7,9 +7,9 @@ public class AStar {
 	/*
 	 *   one of the implementation of herustic function
 	 * */
-	IHeruisticFunction heuristicFunction;
+	IHeuristicFunction heuristicFunction;
 
-	public AStar(IHeruisticFunction heuristicFunction) {
+	public AStar(IHeuristicFunction heuristicFunction) {
 		this.heuristicFunction = heuristicFunction;
 	}
 
