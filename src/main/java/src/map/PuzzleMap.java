@@ -24,7 +24,7 @@ public class PuzzleMap implements Comparable {
 
 	private static int direction = 1;
 
-	private static int size;
+	public static int size;
 
 	private static PuzzleMap finalState = null;
 
@@ -294,6 +294,10 @@ public class PuzzleMap implements Comparable {
 			}
 		}
 		return inversions;
+	}
+
+	public boolean isSolved() {
+		return finalState.equals(this);
 	}
 
 	@Override

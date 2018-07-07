@@ -5,7 +5,7 @@ import src.map.PuzzleMap;
 public class AStar {
 
 	/*
-	 *   one of the implementation of herustic function
+	 *   one of the implementation of heuristic function
 	 * */
 	IHeuristicFunction heuristicFunction;
 
