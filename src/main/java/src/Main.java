@@ -1,5 +1,6 @@
 package src;
 
+import src.algo.ManhattanDistanceHeuristicFunction;
 import src.algo.SimpleHeuristicFunction;
 import src.input.InputManager;
 import src.map.PuzzleMap;
@@ -20,9 +21,13 @@ public class Main {
 		PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());
 		initialState.printMap();
 		PuzzleMap.generateFinalState();
-		System.out.println(initialState.isSolvable());
+		System.out.println(initialState.isSolvable() + " " + initialState.isSolved());
 
-		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
+		initialState.setHeuristicFunction(new ManhattanDistanceHeuristicFunction(initialState));
+
+//		ManhattanDistanceHeuristicFunction manhattanDistanceHeuristicFunction = new ManhattanDistanceHeuristicFunction(initialState);
+
+//		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
 
 		System.out.println("\nget possible moves\n");
 
