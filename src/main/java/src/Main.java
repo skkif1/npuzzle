@@ -14,7 +14,7 @@ public class Main {
 		InputManager manager = new InputManager();
 		int[][] map = null;
 
-		map = manager.getMapNumbers(windowsOS);
+		map = manager.getMapNumbers(macOS);
 
 		// construct initial state
 		PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());
