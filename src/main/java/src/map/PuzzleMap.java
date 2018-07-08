@@ -46,7 +46,7 @@ public class PuzzleMap implements Comparable {
 
 	public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent) {
 		this(map, mapSize);
-		this.h = parent.h++;
+		this.h = parent.h + 1;
 		this.parent = parent;
 		this.heuristicFunction = parent.heuristicFunction;
 		calculateCoast();
@@ -58,7 +58,8 @@ public class PuzzleMap implements Comparable {
 	 *   getPossibleMoves() to generate new Maps
 	 *
 	 * */
-	public PuzzleMap(int[][] map, int mapSize) {
+	public PuzzleMap(int[][] map, int mapSize)
+	{
 		this.map = map;
 		size = mapSize;
 		this.internal = createInternalString();
