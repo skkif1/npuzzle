@@ -49,5 +49,19 @@ public class ManhattanDistanceHeuristicFunction implements IHeuristicFunction {
 			currentStates.remove(0);
 		}
 		System.out.println("SOLVED");
+		PuzzleMap resultState = currentStates.get(0);
+		System.out.println();
+		List<PuzzleMap> result = new ArrayList<>();
+		while (resultState != null) {
+			result.add(0, resultState);
+			resultState = resultState.getParent();
+		}
+		System.out.println("111");
+		System.out.println();
+		for (PuzzleMap puzzleMap : result) {
+			puzzleMap.printMap();
+			System.out.println();
+		}
+		System.out.println("222");
 	}
 }

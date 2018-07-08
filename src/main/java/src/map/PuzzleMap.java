@@ -65,7 +65,12 @@ public class PuzzleMap implements Comparable {
 		findEmptyCell();
 	}
 
+	public PuzzleMap getParent() {
+		return parent;
+	}
+
 	private void calculateCoast() {
+		if (heuristicFunction == null) return;
 		coast = h + heuristicFunction.calculateGCoast(this, finalState);
 	}
 
