@@ -23,8 +23,10 @@ public class Main {
 		PuzzleMap.generateFinalState();
 		System.out.println(initialState.isSolvable() + " " + initialState.isSolved());
 
-		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
-		initialState.setHeuristicFunction(new ManhattanDistanceHeuristicFunction(initialState));
+		ManhattanDistanceHeuristicFunction manhattanDistanceHeuristicFunction = new ManhattanDistanceHeuristicFunction(initialState);
+
+//		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
+		initialState.setHeuristicFunction(manhattanDistanceHeuristicFunction);
 
 		System.out.println("\nget possible moves\n");
 
