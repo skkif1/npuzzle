@@ -3,7 +3,6 @@ package src.algo;
 import src.map.PuzzleMap;
 
 import java.util.List;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 
@@ -18,11 +17,17 @@ public class AStar
 
 	private TreeSet<PuzzleMap> closed = new TreeSet<>();
 
+	private long execTime;
 
 
+	public long getExecTime()
+	{
+		return execTime;
+	}
 
 	public PuzzleMap run(PuzzleMap start)
 	{
+		execTime = System.currentTimeMillis();
 		finalState = PuzzleMap.getFinalState();
 
 
@@ -34,6 +39,7 @@ public class AStar
 
 			if (currentNode.equals(finalState))
 			{
+				execTime = System.currentTimeMillis() - execTime;
 				return currentNode;
 			}
 
