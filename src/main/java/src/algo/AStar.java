@@ -1,5 +1,6 @@
 package src.algo;
 
+import src.SortedPuzzleSet;
 import src.map.PuzzleMap;
 
 import java.util.List;
@@ -13,12 +14,13 @@ public class AStar
 
 	private PuzzleMap res;
 
-	private TreeSet<PuzzleMap> open = new TreeSet<>();
+	private SortedPuzzleSet<PuzzleMap> open = new SortedPuzzleSet<>();
 
-	private TreeSet<PuzzleMap> closed = new TreeSet<>();
+	private SortedPuzzleSet<PuzzleMap> closed = new SortedPuzzleSet<>();
 
 	private long execTime;
 
+	static int count = 1;
 
 	public long getExecTime()
 	{
@@ -45,12 +47,14 @@ public class AStar
 
 			List<PuzzleMap> childNodes = currentNode.getPossibleMoves();
 
+			count += childNodes.size();
+
 			for (PuzzleMap childNode : childNodes)
 			{
 				PuzzleMap temp;
 				if (open.contains(childNode))
 				{
-					temp = open.subSet(childNode, childNode).first();
+					temp = open.get(childNode);
 
 					if (temp.compareTo(childNode) <= 0)
 					{
@@ -62,7 +66,7 @@ public class AStar
 
 				if (closed.contains(childNode))
 				{
-					temp = open.subSet(childNode, childNode).first();
+					temp = closed.get(childNode);
 
 					if (temp.compareTo(childNode) <= 0)
 					{
@@ -71,11 +75,13 @@ public class AStar
 					}
 				}
 
+
 				open.add(childNode);
 			}
 
 			closed.add(currentNode);
 		}
+		System.out.println(count);
 		return null;
 	}
 

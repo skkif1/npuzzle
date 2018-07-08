@@ -44,7 +44,8 @@ public class PuzzleMap implements Comparable {
 
 	private int iteratorJ = 0;
 
-	public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent) {
+	public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent)
+    {
 		this(map, mapSize);
 		this.h = parent.h + 1;
 		this.parent = parent;
@@ -70,7 +71,8 @@ public class PuzzleMap implements Comparable {
 		return parent;
 	}
 
-	private void calculateCoast() {
+	private void calculateCoast()
+    {
 		if (heuristicFunction == null) return;
 		coast = h + heuristicFunction.calculateGCoast(this, finalState);
 	}
@@ -318,12 +320,18 @@ public class PuzzleMap implements Comparable {
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+    {
 		return internal.hashCode();
 	}
 
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Object o)
+    {
+        if ((this.coast - ((PuzzleMap) o).coast) == 0)
+        {
+            return 0;
+        }
 		return (this.coast - ((PuzzleMap) o).coast) < 1 ? -1 : 1;
 	}
 }

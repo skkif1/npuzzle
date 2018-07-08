@@ -1,44 +1,59 @@
 package src;
 
+import src.algo.AStar;
 import src.algo.ManhattanDistanceHeuristicFunction;
 import src.algo.SimpleHeuristicFunction;
 import src.input.InputManager;
 import src.map.PuzzleMap;
 
-public class Main {
+import java.util.TreeSet;
 
-	private static final String macOS = "/Users/mivanov/testMap";
+public class Main
+{
+	private static final String macOS = "/Users/omotyliu/testMap1";
 
 	private static final String windowsOS = "C:\\Max\\testMap";
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+    {
 		InputManager manager = new InputManager();
 		int[][] map = null;
 
-		map = manager.getMapNumbers(windowsOS);
+		map = manager.getMapNumbers(macOS);
 
 		// construct initial state
 		PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());
-		initialState.printMap();
 		PuzzleMap.generateFinalState();
-		System.out.println(initialState.isSolvable() + " " + initialState.isSolved());
+		System.out.println(initialState.isSolvable());
+		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
 
-		initialState.setHeuristicFunction(new ManhattanDistanceHeuristicFunction(initialState));
 
-//		ManhattanDistanceHeuristicFunction manhattanDistanceHeuristicFunction = new ManhattanDistanceHeuristicFunction(initialState);
+        AStar algo = new AStar();
+		PuzzleMap res = algo.run(initialState);
 
-//		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
 
-		System.out.println("\nget possible moves\n");
+		res.printParentLine();
+		System.out.println(algo.getExecTime() + " seconds");
 
-		for (PuzzleMap puzzleMap : initialState.getPossibleMoves()) {
-			puzzleMap.printMap();
-			System.out.println("\n");
-		}
 
-		System.out.println("\nprint state which is need to find\n");
-		PuzzleMap.getFinalState().printMap();
 
-	}
+//        SortedPuzzleSet<PuzzleMap> test = new SortedPuzzleSet<>();
+//        PuzzleMap mapClone = new PuzzleMap(map, manager.getMapSize());
+//        mapClone.setHeuristicFunction(new SimpleHeuristicFunction());
+//
+//
+//        test.add(initialState);
+//        System.out.println(test.size() == 1);
+//        test.add(initialState);
+//        System.out.println(test.size() == 1);
+//        test.pollFirst();
+//        System.out.println(test.size() == 0);
+//        test.add(initialState);
+//        System.out.println(test.contains(initialState));
+//        test.add(mapClone);
+//        System.out.println(test.contains(mapClone));
+//        System.out.println(test.size() == 1);
+
+
+    }
 }
-
