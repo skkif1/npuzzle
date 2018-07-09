@@ -12,20 +12,20 @@ public class Main
 {
 	private static final String macOS = "/Users/omotyliu/testMap1";
 
-	private static final String windowsOS = "C:\\Max\\testMap";
+	private static final String windowsOS = "C:\\Users\\Oleksandr\\Desktop\\UNIT\\testMap.txt";
 
 	public static void main(String[] args)
     {
 		InputManager manager = new InputManager();
 		int[][] map = null;
 
-		map = manager.getMapNumbers(macOS);
+		map = manager.getMapNumbers(windowsOS);
 
 		// construct initial state
 		PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());
 		PuzzleMap.generateFinalState();
 		System.out.println(initialState.isSolvable());
-		initialState.setHeuristicFunction(new SimpleHeuristicFunction());
+		initialState.setHeuristicFunction(new ManhattanDistanceHeuristicFunction());
 
 
         AStar algo = new AStar();
@@ -37,9 +37,9 @@ public class Main
 
 
 
-//        SortedPuzzleSet<PuzzleMap> test = new SortedPuzzleSet<>();
+//        SortedPuzzleSet test = new SortedPuzzleSet();
 //        PuzzleMap mapClone = new PuzzleMap(map, manager.getMapSize());
-//        mapClone.setHeuristicFunction(new SimpleHeuristicFunction());
+//        mapClone.setHeuristicFunction(new ManhattanDistanceHeuristicFunction());
 //
 //
 //        test.add(initialState);
@@ -50,9 +50,10 @@ public class Main
 //        System.out.println(test.size() == 0);
 //        test.add(initialState);
 //        System.out.println(test.contains(initialState));
-//        test.add(mapClone);
+//		test.add(mapClone);
+//		System.out.println(test.get(initialState).getCoast());
 //        System.out.println(test.contains(mapClone));
-//        System.out.println(test.size() == 1);
+//        System.out.println(test.get(mapClone).getCoast());
 
 
     }

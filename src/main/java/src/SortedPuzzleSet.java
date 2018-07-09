@@ -1,59 +1,98 @@
 package src;
 
+import java.util.ArrayList;
+
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeSet;
+import src.map.PuzzleMap;
 
-
-
-public class SortedPuzzleSet<E> extends TreeSet<E>
+public class SortedPuzzleSet
 {
-    HashMap<E, E> hash  = new HashMap<>();
+    private HashMap<PuzzleMap, PuzzleMap> hash  = new HashMap<>();
+
+    private Map<Integer, List<PuzzleMap>> complexityMap = new HashMap<>();
+
+    private SortedSet<Integer> order = new TreeSet<>();
+
+    private long size = 0;
 
 
-    @Override
-    public boolean add(E o)
+
+    public void add(PuzzleMap node)
     {
 
-        if (this.contains(o))
+        hash.put(node, node);
+        List<PuzzleMap> sameComplexity = complexityMap.get(node.getCoast());
+        if (sameComplexity == null)
         {
-            Object toDell = hash.get(o);
-            super.remove(toDell);
+            sameComplexity = new ArrayList<>();
+            sameComplexity.add(node);
+            if (!complexityMap.containsKey(node))
+                size++;
+            complexityMap.put(node.getCoast(), sameComplexity);
+            order.add(node.getCoast());
+
+        }else
+        {
+            sameComplexity.add(node);
+            size++;
         }
 
-        if (super.add(o))
+    }
+
+
+    public boolean isEmpty()
+    {
+        return size == 0;
+    }
+
+
+    public PuzzleMap pollFirst()
+    {
+        if (size > 0)
         {
-            hash.put(o, o);
-            return true;
+
+            PuzzleMap res = complexityMap.get(order.first()).get(0);
+            removeNode(res);
+            return res;
         }
-
-        return false;
+        return null;
     }
 
-
-    @Override
-    public boolean contains(Object o)
+    public boolean contains(PuzzleMap mapToSearch)
     {
-        return hash.keySet().contains(o);
+        return hash.keySet().contains(mapToSearch);
     }
 
-    public E get(Object o)
+    public PuzzleMap get(PuzzleMap map)
     {
-        return hash.get(o);
+        return hash.get(map);
     }
 
-    @Override
-    public E pollFirst()
+    private void removeNode(PuzzleMap map)
     {
-        E temp = super.pollFirst();
-        hash.remove(temp);
-        return temp;
+        if (hash.containsKey(map))
+        {
+            hash.remove(map);
+            List<PuzzleMap> sameComplexity = complexityMap.get(map.getCoast());
+            sameComplexity.remove(map);
+            if (sameComplexity.size() == 0)
+                order.remove(map.getCoast());
+            size--;
+        }
     }
 
-    @Override
-    public int size()
+    public long size()
     {
-        if (super.size() != hash.size())
-            throw new RuntimeException("Mismatch between wraper and HashTree");
-        return hash.size();
+        return size;
     }
+
+
+
+
+
+
 }

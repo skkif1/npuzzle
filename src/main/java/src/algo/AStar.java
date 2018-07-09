@@ -4,8 +4,6 @@ import src.SortedPuzzleSet;
 import src.map.PuzzleMap;
 
 import java.util.List;
-import java.util.TreeSet;
-
 
 public class AStar
 {
@@ -14,9 +12,9 @@ public class AStar
 
 	private PuzzleMap res;
 
-	private SortedPuzzleSet<PuzzleMap> open = new SortedPuzzleSet<>();
+	private SortedPuzzleSet open = new SortedPuzzleSet();
 
-	private SortedPuzzleSet<PuzzleMap> closed = new SortedPuzzleSet<>();
+	private SortedPuzzleSet closed = new SortedPuzzleSet();
 
 	private long execTime;
 
@@ -81,7 +79,6 @@ public class AStar
 
 			closed.add(currentNode);
 		}
-		System.out.println(count);
 		return null;
 	}
 
