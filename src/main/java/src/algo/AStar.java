@@ -18,7 +18,9 @@ public class AStar
 
 	private long execTime;
 
-	static int count = 1;
+	static long pollCount = 0;
+
+	static long count = 0;
 
 	public long getExecTime()
 	{
@@ -35,8 +37,12 @@ public class AStar
 
 		while (!open.isEmpty())
 		{
+			count++;
+			long stat = System.currentTimeMillis();
+
 			PuzzleMap currentNode = open.pollFirst();
 
+			pollCount += System.currentTimeMillis() - stat;
 			if (currentNode.equals(finalState))
 			{
 				execTime = System.currentTimeMillis() - execTime;
@@ -45,7 +51,6 @@ public class AStar
 
 			List<PuzzleMap> childNodes = currentNode.getPossibleMoves();
 
-			count += childNodes.size();
 
 			for (PuzzleMap childNode : childNodes)
 			{
@@ -78,6 +83,12 @@ public class AStar
 			}
 
 			closed.add(currentNode);
+			if (count % 10000 == 0)
+			{
+				System.out.println(pollCount);
+				pollCount = 0;
+			}
+
 		}
 		return null;
 	}
