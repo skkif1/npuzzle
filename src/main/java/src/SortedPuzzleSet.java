@@ -3,6 +3,7 @@ package src;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -23,24 +24,25 @@ public class SortedPuzzleSet
 
     public void add(PuzzleMap node)
     {
-
+        if (hash.containsKey(node))
+        {
+            removeNode(hash.get(node));
+        }
+        size++;
         hash.put(node, node);
         List<PuzzleMap> sameComplexity = complexityMap.get(node.getCoast());
+
         if (sameComplexity == null)
         {
-            sameComplexity = new ArrayList<>();
+            sameComplexity = new LinkedList<>();
             sameComplexity.add(node);
-            if (!complexityMap.containsKey(node))
-                size++;
             complexityMap.put(node.getCoast(), sameComplexity);
-            order.add(node.getCoast());
-
-        }else
+        }
+        else
         {
             sameComplexity.add(node);
-            size++;
         }
-
+        order.add(node.getCoast());
     }
 
 
@@ -52,19 +54,21 @@ public class SortedPuzzleSet
 
     public PuzzleMap pollFirst()
     {
-        if (size > 0)
-        {
+        int first = order.first();
+        List<PuzzleMap> sameComplexity = complexityMap.get(first);
 
-            PuzzleMap res = complexityMap.get(order.first()).get(0);
-            removeNode(res);
-            return res;
+        if (sameComplexity == null || sameComplexity.isEmpty())
+        {
+            throw new RuntimeException("Order is not relevant");
         }
-        return null;
+        PuzzleMap res = sameComplexity.get(0);
+        removeNode(res);
+        return res;
     }
 
     public boolean contains(PuzzleMap mapToSearch)
     {
-        return hash.keySet().contains(mapToSearch);
+        return hash.containsKey(mapToSearch);
     }
 
     public PuzzleMap get(PuzzleMap map)
@@ -79,20 +83,26 @@ public class SortedPuzzleSet
             hash.remove(map);
             List<PuzzleMap> sameComplexity = complexityMap.get(map.getCoast());
             sameComplexity.remove(map);
-            if (sameComplexity.size() == 0)
+
+            if (sameComplexity.isEmpty())
+            {
                 order.remove(map.getCoast());
-            size--;
+            }
         }
+        else
+        {
+            if (complexityMap.get(map.getCoast()).contains(map))
+            {
+                throw new RuntimeException("wrong implementation");
+            }
+        }
+        size--;
     }
 
     public long size()
     {
         return size;
     }
-
-
-
-
 
 
 }
