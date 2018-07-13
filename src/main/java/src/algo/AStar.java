@@ -22,6 +22,16 @@ public class AStar
 
 	static long count = 0;
 
+	static long pollTime = 0;
+
+	static long variantCreation = 0;
+
+	static long addTime  = 0;
+
+	static long closedAddTime  = 0;
+
+	static long getTime = 0;
+
 	public long getExecTime()
 	{
 		return execTime;
@@ -39,25 +49,37 @@ public class AStar
 		{
 			count++;
 			long stat = System.currentTimeMillis();
-
+			long tempSize = open.size();
 			PuzzleMap currentNode = open.pollFirst();
+			if (open.size() != tempSize - 1)
+				System.out.println("");
+			pollTime += System.currentTimeMillis() - stat;
 
-			pollCount += System.currentTimeMillis() - stat;
 			if (currentNode.equals(finalState))
 			{
 				execTime = System.currentTimeMillis() - execTime;
+				System.out.println(execTime);
+				System.out.println(pollTime);
+				System.out.println(variantCreation);
+				System.out.println(addTime);
+				System.out.println(closedAddTime);
+				System.out.println(getTime);
 				return currentNode;
 			}
 
+			stat = System.currentTimeMillis();
 			List<PuzzleMap> childNodes = currentNode.getPossibleMoves();
-
+			variantCreation += System.currentTimeMillis() - stat;
 
 			for (PuzzleMap childNode : childNodes)
 			{
 				PuzzleMap temp;
+
 				if (open.contains(childNode))
 				{
+					stat = System.currentTimeMillis();
 					temp = open.get(childNode);
+					getTime = System.currentTimeMillis() - stat;
 
 					if (temp.compareTo(childNode) <= 0)
 					{
@@ -78,16 +100,14 @@ public class AStar
 					}
 				}
 
-
+				stat = System.currentTimeMillis();
 				open.add(childNode);
+				addTime = System.currentTimeMillis() - stat;
 			}
+			stat = System.currentTimeMillis();
 
 			closed.add(currentNode);
-			if (count % 10000 == 0)
-			{
-				System.out.println(pollCount);
-				pollCount = 0;
-			}
+			closedAddTime = System.currentTimeMillis() - stat;
 
 		}
 		return null;
