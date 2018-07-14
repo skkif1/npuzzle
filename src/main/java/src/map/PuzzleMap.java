@@ -78,13 +78,13 @@ public class PuzzleMap implements Comparable {
 	}
 
 	private String createInternalString() {
-		String temp = "";
+		StringBuilder temp = new StringBuilder();
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				temp += (String.valueOf(map[i][j]));
+				temp.append(String.valueOf(map[i][j]));
 			}
 		}
-		return temp;
+		return temp.toString();
 	}
 
 	private void findEmptyCell() {
