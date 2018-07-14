@@ -24,7 +24,7 @@ public class PuzzleMap implements Comparable {
 
 	private static int direction = 1;
 
-	private static int size;
+	public static int size;
 
 	private static PuzzleMap finalState = null;
 
@@ -44,9 +44,10 @@ public class PuzzleMap implements Comparable {
 
 	private int iteratorJ = 0;
 
-	public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent) {
+	public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent)
+    {
 		this(map, mapSize);
-		this.h = parent.h++;
+		this.h = parent.h + 1;
 		this.parent = parent;
 		this.heuristicFunction = parent.heuristicFunction;
 		calculateCoast();
@@ -58,14 +59,21 @@ public class PuzzleMap implements Comparable {
 	 *   getPossibleMoves() to generate new Maps
 	 *
 	 * */
-	public PuzzleMap(int[][] map, int mapSize) {
+	public PuzzleMap(int[][] map, int mapSize)
+	{
 		this.map = map;
 		size = mapSize;
 		this.internal = createInternalString();
 		findEmptyCell();
 	}
 
-	private void calculateCoast() {
+	public PuzzleMap getParent() {
+		return parent;
+	}
+
+	private void calculateCoast()
+    {
+		if (heuristicFunction == null) return;
 		coast = h + heuristicFunction.calculateGCoast(this, finalState);
 	}
 
@@ -296,6 +304,10 @@ public class PuzzleMap implements Comparable {
 		return inversions;
 	}
 
+	public boolean isSolved() {
+		return finalState.equals(this);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -308,12 +320,18 @@ public class PuzzleMap implements Comparable {
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+    {
 		return internal.hashCode();
 	}
 
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Object o)
+    {
+        if ((this.coast - ((PuzzleMap) o).coast) == 0)
+        {
+            return 0;
+        }
 		return (this.coast - ((PuzzleMap) o).coast) < 1 ? -1 : 1;
 	}
 }

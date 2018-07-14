@@ -32,7 +32,8 @@ public class InputManager {
 	}
 
 
-	private void cleanFile() {
+	private void cleanFile()
+	{
 		map = rowFile.stream()
 				.map(InputManager::removeComment)
 				.filter(this::isMapRow)
