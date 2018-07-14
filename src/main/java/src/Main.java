@@ -35,26 +35,5 @@ public class Main
 		res.printParentLine();
 		System.out.println(algo.getExecTime() + " miliseconds");
 
-
-
-//        SortedPuzzleSet test = new SortedPuzzleSet();
-//        PuzzleMap mapClone = new PuzzleMap(map, manager.getMapSize());
-//        mapClone.setHeuristicFunction(new ManhattanDistanceHeuristicFunction());
-//
-//
-//        test.add(initialState);
-//        System.out.println(test.size() == 1);
-//        test.add(initialState);
-//        System.out.println(test.size() == 1);
-//        test.pollFirst();
-//        System.out.println(test.size() == 0);
-//        test.add(initialState);
-//        System.out.println(test.contains(initialState));
-//		test.add(mapClone);
-//		System.out.println(test.get(initialState).getCoast());
-//        System.out.println(test.contains(mapClone));
-//        System.out.println(test.get(mapClone).getCoast());
-
-
     }
 }
