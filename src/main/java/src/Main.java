@@ -33,7 +33,7 @@ public class Main
 
 
 		res.printParentLine();
-		System.out.println(algo.getExecTime() + " seconds");
+		System.out.println(algo.getExecTime() + " miliseconds");
 
 
 
