@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,6 +19,7 @@ public class InputManager {
 	private List<String> map = new ArrayList<>();
 
 	private final static char COMMENT_CHAR = '#';
+	private final static String COMMENT_STRING = "#";
 
 	private int mapSize;
 
@@ -40,6 +43,11 @@ public class InputManager {
 
 	public int[][] getMapNumbers(String fileName) {
 		getFileContent(fileName);
+		try {
+			validateFile();
+		} catch (NumberFormatException e) {
+			throw new InputManagerException("Invalid file");
+		}
 		findMapSize();
 		cleanFile();
 
@@ -107,6 +115,36 @@ public class InputManager {
 		}
 
 		return false;
+	}
+
+	private void validateFile() throws NumberFormatException {
+		if (rowFile == null || rowFile.isEmpty()) throw new InputManagerException("File is absent or empty file");
+		Set<Integer> numbers = new HashSet<>();
+		String line;
+		int i;
+		int sum = 0;
+		Integer size = null;
+		for (String s : rowFile) {
+			if (StringUtils.startsWith(s.trim(), COMMENT_STRING)) continue;
+			line = removeComment(s).trim();
+			String[] split = line.split("[\\s]+");
+			if (split.length == 1) {
+				if (size != null) throw new InputManagerException("Invalid size");
+				else size = Integer.parseInt(split[0]);
+				if (size <= 2) throw new InputManagerException("Wrong map size");
+				continue;
+			}
+			for (String s1 : split) {
+				i = Integer.parseInt(s1);
+				if (i < 0) throw new InputManagerException("Numbers must be more than zero");
+				numbers.add(i);
+			}
+		}
+		if (size == null || numbers.size() != size * size) throw new InputManagerException("Invalid numbers");
+		for (Integer number : numbers) {
+			sum += number;
+		}
+		if (sum != (size * size - 1) * (size * size) / 2) throw new InputManagerException("Invalid numbers");
 	}
 
 }
