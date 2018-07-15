@@ -2,6 +2,7 @@ package src;
 
 import src.algo.AStar;
 import src.algo.ManhattanDistanceHeuristicFunction;
+import src.algo.OmotyliuHeuristicFunction;
 import src.algo.SimpleHeuristicFunction;
 import src.input.InputManager;
 import src.map.PuzzleMap;
@@ -25,7 +26,7 @@ public class Main
 		PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());
 		PuzzleMap.generateFinalState();
 		System.out.println(initialState.isSolvable());
-		initialState.setHeuristicFunction(new ManhattanDistanceHeuristicFunction());
+		initialState.setHeuristicFunction(new OmotyliuHeuristicFunction());
 
 
         AStar algo = new AStar();

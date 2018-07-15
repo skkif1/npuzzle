@@ -86,7 +86,8 @@ public class PuzzleMap implements Comparable {
 		return finalState;
 	}
 
-	public static void generateFinalState() {
+	public static void generateFinalState()
+	{
 		finalState = new PuzzleMap(findFinalState(), size);
 	}
 

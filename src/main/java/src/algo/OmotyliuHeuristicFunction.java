@@ -21,28 +21,30 @@ public class OmotyliuHeuristicFunction implements IHeuristicFunction
 
     int[][] currentState;
 
+    private int  lastMovable;
+
 
     @Override
     public int calculateGCoast(PuzzleMap state, PuzzleMap finalState)
     {
         this.finalState = finalState.getMap();
         this.currentState = state.getMap();
+        int res = 0;
+
         getCurrentMovable();
-        System.out.println(getDistance());
-        return 0;
+
+        if (currentMovable < lastMovable)
+        res += 3;
+        res += getDistance();
+
+        lastMovable = currentMovable;
+
+        return res;
     }
 
-    public static void main(String[] args)
-    {
-
-
-    }
 
     private void getCurrentMovable()
     {
-//        int finalState[][] = {{1,2,3}, {8,0,4}, {7,6,5}};
-//        int currentState[][] = {{3,2,6}, {1,4,0}, {8,7,5}};
-
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
@@ -50,7 +52,6 @@ public class OmotyliuHeuristicFunction implements IHeuristicFunction
                 if (currentState[i][j] != finalState[i][j])
                 {
                     currentMovable = finalState[i][j];
-                    System.out.println(currentMovable);
                     finalIteratorI = i;
                     finalIteratorJ = j;
                     return;
@@ -76,5 +77,7 @@ public class OmotyliuHeuristicFunction implements IHeuristicFunction
 
         return Math.abs(finalIteratorI - currentIteratorI) + Math.abs(finalIteratorJ - currentIteratorJ);
     }
+
+
 
 }
