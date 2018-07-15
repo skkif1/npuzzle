@@ -1,9 +1,6 @@
 package src.map;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javafx.util.Pair;
 import src.algo.IHeuristicFunction;
@@ -27,8 +24,6 @@ public class PuzzleMap implements Comparable {
 	public static int size;
 
 	private static PuzzleMap finalState = null;
-
-	private final String internal;
 
 	private IHeuristicFunction heuristicFunction;
 
@@ -63,7 +58,6 @@ public class PuzzleMap implements Comparable {
 	{
 		this.map = map;
 		size = mapSize;
-		this.internal = createInternalString();
 		findEmptyCell();
 	}
 
@@ -75,16 +69,6 @@ public class PuzzleMap implements Comparable {
     {
 		if (heuristicFunction == null) return;
 		coast = h + heuristicFunction.calculateGCoast(this, finalState);
-	}
-
-	private String createInternalString() {
-		String temp = "";
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				temp += (String.valueOf(map[i][j]));
-			}
-		}
-		return temp;
 	}
 
 	private void findEmptyCell() {
@@ -146,18 +130,6 @@ public class PuzzleMap implements Comparable {
 			currentDirection = getDirection(currentDirection.getKey(), currentDirection.getValue(), stateToSearch);
 		}
 		return stateToSearch;
-	}
-
-	/*
-	 *   return state of the current map in string
-	 *   1  2  3
-	 *   8     4
-	 *   7  6  5
-	 *
-	 *   will return 12345678
-	 * */
-	public String getInternal() {
-		return internal;
 	}
 
 	public int[][] getMap() {
@@ -222,7 +194,8 @@ public class PuzzleMap implements Comparable {
 	 *   should print to std path which show result
 	 * */
 
-	public void printMap() {
+	public void printMap()
+	{
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				out.print(map[i][j] + " ");
@@ -231,33 +204,6 @@ public class PuzzleMap implements Comparable {
 			out.println();
 		}
 	}
-
-	/*
-	 *   should say if current map is solvable (not working)
-	 * */
-
-//    def inversion(size, puzzle):
-//    inv = 0
-//            for i in range(size * size - 1):
-//            for j in range(i + 1, size * size):
-//            if puzzle[i] > puzzle[j] and puzzle[i] != 0 and puzzle[j] != 0:
-//    inv += 1
-//            return inv
-//
-//    def is_solvable(size, goalmatrix, puzzlematrix):
-//    goal, puzzle = [], []
-//            for rawgoal, rawmatrix in zip(goalmatrix, puzzlematrix):
-//            for g,p in zip(rawgoal, rawmatrix):
-//            goal.append(g)
-//            puzzle.append(p)
-//    inv_goal = inversion(size, goal)
-//    inv_puzzl = inversion(size, puzzle)
-//
-//    if size % 2 == 0:
-//    inv_goal += goal.index(0)
-//    inv_puzzl += puzzle.index(0)
-//
-//            return (inv_puzzl % 2 == inv_goal % 2)
 
 	public boolean isSolvable() {
 		int[] finalStateArray = new int[size * size];
@@ -309,20 +255,20 @@ public class PuzzleMap implements Comparable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(Object o)
+	{
 		if (this == o)
 			return true;
-		if (!(o instanceof PuzzleMap)) return false;
+		if (!(o instanceof PuzzleMap))
+			return false;
 
-		PuzzleMap map = (PuzzleMap) o;
-
-		return internal.equals(map.internal);
+		return Arrays.deepEquals(((PuzzleMap) o).getMap(), this.map);
 	}
 
 	@Override
 	public int hashCode()
     {
-		return internal.hashCode();
+		return Arrays.deepHashCode(map);
 	}
 
 	@Override
