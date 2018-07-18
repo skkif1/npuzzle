@@ -117,7 +117,8 @@ public class InputManager {
 		return false;
 	}
 
-	private void validateFile() throws NumberFormatException{
+	private void validateFile() throws NumberFormatException {
+		if (rowFile == null || rowFile.isEmpty()) throw new InputManagerException("File is absent or empty file");
 		Set<Integer> numbers = new HashSet<>();
 		String line;
 		int i;
@@ -126,20 +127,20 @@ public class InputManager {
 		for (String s : rowFile) {
 			if (StringUtils.startsWith(s.trim(), COMMENT_STRING)) continue;
 			line = removeComment(s).trim();
-            String[] split = line.split("[\\s]+");
-            if (split.length == 1){
-            	if (size != null) throw new InputManagerException("Invalid size");
-            	else size = Integer.parseInt(split[0]);
-            	if (size <= 2) throw new InputManagerException("Wrong map size");
-            	continue;
+			String[] split = line.split("[\\s]+");
+			if (split.length == 1) {
+				if (size != null) throw new InputManagerException("Invalid size");
+				else size = Integer.parseInt(split[0]);
+				if (size <= 2) throw new InputManagerException("Wrong map size");
+				continue;
 			}
-            for (String s1 : split) {
+			for (String s1 : split) {
 				i = Integer.parseInt(s1);
 				if (i < 0) throw new InputManagerException("Numbers must be more than zero");
 				numbers.add(i);
-            }
-        }
-        if (size == null || numbers.size() != size * size) throw new InputManagerException("Invalid numbers");
+			}
+		}
+		if (size == null || numbers.size() != size * size) throw new InputManagerException("Invalid numbers");
 		for (Integer number : numbers) {
 			sum += number;
 		}
