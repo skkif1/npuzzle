@@ -17,13 +17,13 @@ import static java.lang.System.*;
 
 public class PuzzleMap implements Comparable {
 
-	private static final int EMPTY_CELL = 0;
+	private final int EMPTY_CELL = 0;
 
-	private static int direction = 1;
+	private int direction = 1;
 
-	public static int size;
+	public int size;
 
-	private static PuzzleMap finalState = null;
+	private PuzzleMap finalState = null;
 
 	private IHeuristicFunction heuristicFunction;
 
@@ -45,6 +45,7 @@ public class PuzzleMap implements Comparable {
 		this.h = parent.h + 1;
 		this.parent = parent;
 		this.heuristicFunction = parent.heuristicFunction;
+		this.finalState = parent.finalState;
 		calculateCoast();
 	}
 
@@ -82,15 +83,15 @@ public class PuzzleMap implements Comparable {
 		}
 	}
 
-	public static PuzzleMap getFinalState() {
+	public PuzzleMap getFinalState() {
 		return finalState;
 	}
 
-	public static void generateFinalState() {
+	public  void generateFinalState() {
 		finalState = new PuzzleMap(findFinalState(), size);
 	}
 
-	private static Pair<Integer, Integer> getDirection(int i, int j, int[][] stateToSearch) {
+	private Pair<Integer, Integer> getDirection(int i, int j, int[][] stateToSearch) {
 		int ii = i;
 		int jj = j;
 
@@ -119,7 +120,7 @@ public class PuzzleMap implements Comparable {
 		}
 	}
 
-	private static int[][] findFinalState() {
+	private int[][] findFinalState() {
 		int lastNum = size * size - 1;
 		int[][] stateToSearch = new int[size][size];
 
