@@ -27,7 +27,7 @@ public class InputManager {
 		try (Stream<String> linesStream = Files.lines(Paths.get(fileName))) {
 			rowFile = linesStream.collect(Collectors.toList());
 		} catch (IOException ex) {
-			throw new InputManagerException("not valid file");
+			throw new InputManagerException("not valid file " + fileName);
 		}
 	}
 
@@ -72,6 +72,10 @@ public class InputManager {
 
 	public int getMapSize() {
 		return mapSize;
+	}
+
+	public void setMapSize(int mapSize){
+		this.mapSize = mapSize;
 	}
 
 	private void findMapSize() {
