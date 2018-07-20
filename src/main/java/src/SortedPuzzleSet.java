@@ -1,6 +1,5 @@
 package src;
 
-import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,10 +19,13 @@ public class SortedPuzzleSet
 
     private long size = 0;
 
+    private StatHolder statHolder = new StatHolder();
 
 
     public void add(PuzzleMap node)
     {
+        statHolder.startTime("addOperation");
+
         if (hash.containsKey(node))
         {
             removeNode(hash.get(node));
@@ -43,6 +45,7 @@ public class SortedPuzzleSet
             sameComplexity.add(node);
         }
         order.add(node.getCoast());
+        statHolder.endTime("addOPeration");
     }
 
 
@@ -54,15 +57,13 @@ public class SortedPuzzleSet
 
     public PuzzleMap pollFirst()
     {
+        statHolder.startTime("pollOperation");
         int first = order.first();
         List<PuzzleMap> sameComplexity = complexityMap.get(first);
 
-        if (sameComplexity == null || sameComplexity.isEmpty())
-        {
-            throw new RuntimeException("Order is not relevant");
-        }
         PuzzleMap res = sameComplexity.get(0);
         removeNode(res);
+        statHolder.endTime("pollOperation");
         return res;
     }
 
@@ -78,6 +79,7 @@ public class SortedPuzzleSet
 
     private void removeNode(PuzzleMap map)
     {
+        statHolder.startTime("removeOPeration");
         if (hash.containsKey(map))
         {
             hash.remove(map);
@@ -89,14 +91,8 @@ public class SortedPuzzleSet
                 order.remove(map.getCoast());
             }
         }
-        else
-        {
-            if (complexityMap.get(map.getCoast()).contains(map))
-            {
-                throw new RuntimeException("wrong implementation");
-            }
-        }
         size--;
+        statHolder.endTime("removeOPeration");
     }
 
     public long size()

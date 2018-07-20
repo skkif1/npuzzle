@@ -39,8 +39,10 @@ public class PuzzleMap implements Comparable {
 
 	private int iteratorJ = 0;
 
+	private String filePath;
+
 	public PuzzleMap(int[][] map, int mapSize, PuzzleMap parent)
-    {
+	{
 		this(map, mapSize);
 		this.h = parent.h + 1;
 		this.parent = parent;
@@ -206,7 +208,8 @@ public class PuzzleMap implements Comparable {
 		}
 	}
 
-	public boolean isSolvable() {
+	public boolean isSolvable()
+	{
 		int[] finalStateArray = new int[size * size];
 		int[] currentStateArray = new int[size * size];
 		int k = 0;

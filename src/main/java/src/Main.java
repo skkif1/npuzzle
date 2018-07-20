@@ -93,7 +93,8 @@ public class Main {
         }
     }
 
-    private static PuzzleMap checkMap(String path, IHeuristicFunction heuristicFunction, InputManager manager) {
+    private static PuzzleMap checkMap(String path, IHeuristicFunction heuristicFunction, InputManager manager)
+    {
         int[][] map = manager.getMapNumbers(path);
         manager.setMapSize(map.length);
         PuzzleMap initialState = new PuzzleMap(map, manager.getMapSize());

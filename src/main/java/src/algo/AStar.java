@@ -1,6 +1,7 @@
 package src.algo;
 
 import src.SortedPuzzleSet;
+import src.StatHolder;
 import src.map.PuzzleMap;
 
 import java.util.List;
@@ -12,8 +13,6 @@ public class AStar implements Callable {
 
     private PuzzleMap start;
 
-    private PuzzleMap res;
-
     private SortedPuzzleSet open = new SortedPuzzleSet();
 
     private SortedPuzzleSet closed = new SortedPuzzleSet();
@@ -23,18 +22,25 @@ public class AStar implements Callable {
         this.start = start;
     }
 
+    private StatHolder statHolder = new StatHolder();
+
     @Override
     public Object call() throws Exception {
         return run();
     }
 
-    private PuzzleMap run() {
+    private PuzzleMap run()
+    {
+        statHolder.startTime("runExecution" + Thread.currentThread().getName());
+
         finalState = start.getFinalState();
         open.add(start);
         while (!open.isEmpty()) {
             PuzzleMap currentNode = open.pollFirst();
 
-            if (currentNode.equals(finalState)) {
+            if (currentNode.equals(finalState))
+            {
+                statHolder.endTime("runExecution" + Thread.currentThread().getName());
                 return currentNode;
             }
 
@@ -60,6 +66,7 @@ public class AStar implements Callable {
             }
             closed.add(currentNode);
         }
+        statHolder.endTime("runExecution" + Thread.currentThread().getName());
         return null;
     }
 }
