@@ -3,6 +3,7 @@ package src;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StatHolder
 {
@@ -19,12 +20,21 @@ public class StatHolder
         return holders;
     }
 
+    private String filePath;
+
     private HashMap<String, Timer> methodMethodExecTime = new HashMap<>();
 
+    private HashMap<String, Long> methodIterator = new HashMap<>();
 
-    public StatHolder()
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public StatHolder(String filePath)
     {
-        holders.add(this);
+        addHolder(this);
+        this.filePath = filePath;
     }
 
 
@@ -47,6 +57,20 @@ public class StatHolder
         methodMethodExecTime.get(method).stop();
     }
 
+    public void iterate(String method)
+    {
+        if (methodIterator.containsKey(method))
+        {
+            Long temp = methodIterator.get(method);
+            temp++;
+            methodIterator.put(method, temp);
+
+        }
+        else
+        {
+            methodIterator.put(method, 1L);
+        }
+    }
 
     static class Timer {
 
@@ -68,6 +92,20 @@ public class StatHolder
         {
             value = System.currentTimeMillis() - temp;
             temp = 0;
+        }
+    }
+
+    public void printStat()
+    {
+
+        for (Map.Entry<String, Timer> stringTimerEntry : methodMethodExecTime.entrySet())
+        {
+            System.out.println(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue().value);
+        }
+
+        for (Map.Entry<String, Long> stringTimerEntry : methodIterator.entrySet())
+        {
+            System.out.println(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue());
         }
     }
 

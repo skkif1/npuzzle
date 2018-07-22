@@ -51,12 +51,16 @@ public class PuzzleMap implements Comparable {
 		calculateCoast();
 	}
 
+	public int getH() {
+		return h;
+	}
+
 	/*
-	 *   Call for this constructor only once than call
-	 *
-	 *   getPossibleMoves() to generate new Maps
-	 *
-	 * */
+         *   Call for this constructor only once than call
+         *
+         *   getPossibleMoves() to generate new Maps
+         *
+         * */
 	public PuzzleMap(int[][] map, int mapSize)
 	{
 		this.map = map;

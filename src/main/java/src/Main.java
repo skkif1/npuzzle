@@ -1,11 +1,14 @@
 package src;
 
+import javafx.util.Pair;
 import src.algo.*;
 import src.input.InputManager;
 import src.map.PuzzleMap;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,15 +16,16 @@ import java.util.concurrent.Future;
 
 public class Main {
 
-    private static final String macOS = "/Users/mivanov/testMap1";
+    private static final String macOS = "/Users/omotyliu/testMap1";
 
     private static final String windowsOS = "C:\\Users\\Oleksandr\\Desktop\\UNIT\\testMap.txt";
 
-    private static List<String> files = new ArrayList<>();
+    private static Set<String> files = new HashSet<>();
 
     private static IHeuristicFunction heuristicFunction;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+	{
         heuristicFunction = getFunction(args);
 
         if (heuristicFunction == null) {
@@ -40,8 +44,12 @@ public class Main {
                 heuristicFunction =  new EuclideanDistanceHeuristicFunction();
             } else if (arg.equalsIgnoreCase("-c")) {
                 heuristicFunction = new ChebyshevDistanceHeuristicFunction();
+            }
+            else if (arg.equalsIgnoreCase("-s"))
+            {
+                heuristicFunction = new SimpleHeuristicFunction();
             } else {
-                files.add(arg);
+				files.add(arg);
             }
         }
         return heuristicFunction;
@@ -53,14 +61,15 @@ public class Main {
     private static void run()
     {
         ExecutorService pool = Executors.newFixedThreadPool(files.size());
-        ArrayList<Future<PuzzleMap>> results = new ArrayList<>();
+        ArrayList<Future<Pair<PuzzleMap,String>>> results = new ArrayList<>();
 
-        for (String path : files) {
+        for (String path : files)
+        {
             InputManager manager = new InputManager();
             AStar algo = new AStar();
             PuzzleMap initialState = checkMap(path, heuristicFunction, manager);
-            algo.setInitialMap(initialState);
-            Future<PuzzleMap> res = pool.submit(algo);
+            algo.setInitialMap(initialState, path);
+            Future<Pair<PuzzleMap, String>> res = pool.submit(algo);
             results.add(res);
         }
 
@@ -68,26 +77,28 @@ public class Main {
         while (done != files.size())
         {
             done = 0;
-            for (Future<PuzzleMap> result : results)
+            for (Future<Pair<PuzzleMap,String>> result : results)
             {
                 if (result.isDone())
                     done++;
             }
         }
-
+		pool.shutdown();
         printRes(results);
     }
 
 
-    private static void printRes(List<Future<PuzzleMap>> results)
+    private static void printRes(List<Future<Pair<PuzzleMap,String>>> results)
     {
-        for (Future<PuzzleMap> result : results)
+        for (Future<Pair<PuzzleMap,String>> result : results)
         {
             try
             {
-                result.get().printMap();
+                result.get().getKey().printParentLine();
+                printMapRes(result);
             }
-            catch (InterruptedException | ExecutionException e) {
+            catch (InterruptedException | ExecutionException e)
+			{
                 System.out.println("something went wrong");
             }
         }
@@ -111,5 +122,21 @@ public class Main {
         initialState.setHeuristicFunction(heuristicFunction);
         return initialState;
     }
+
+    private static void printMapRes(Future<Pair<PuzzleMap,String>> res) throws ExecutionException, InterruptedException
+	{
+
+		System.out.println("stat for map -> " + res.get().getValue());
+		System.out.println("depth of solution : " + res.get().getKey().getH());
+		for (StatHolder statHolder : StatHolder.getHolders())
+		{
+			if (statHolder.getFilePath().equalsIgnoreCase(res.get().getValue()))
+			{
+				statHolder.printStat();
+			}
+		}
+
+		System.out.println();
+	}
 
 }

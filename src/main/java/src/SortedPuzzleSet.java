@@ -19,12 +19,16 @@ public class SortedPuzzleSet
 
     private long size = 0;
 
-    private StatHolder statHolder = new StatHolder();
+    private StatHolder statHolder;
 
+    public SortedPuzzleSet(String filePath)
+    {
+        statHolder = new StatHolder(filePath);
+    }
 
     public void add(PuzzleMap node)
     {
-        statHolder.startTime("addOperation");
+        statHolder.startTime("add operation");
 
         if (hash.containsKey(node))
         {
@@ -45,7 +49,7 @@ public class SortedPuzzleSet
             sameComplexity.add(node);
         }
         order.add(node.getCoast());
-        statHolder.endTime("addOPeration");
+        statHolder.endTime("add operation");
     }
 
 
@@ -57,13 +61,13 @@ public class SortedPuzzleSet
 
     public PuzzleMap pollFirst()
     {
-        statHolder.startTime("pollOperation");
+        statHolder.startTime("poll operation");
         int first = order.first();
         List<PuzzleMap> sameComplexity = complexityMap.get(first);
 
         PuzzleMap res = sameComplexity.get(0);
         removeNode(res);
-        statHolder.endTime("pollOperation");
+        statHolder.endTime("poll operation");
         return res;
     }
 
@@ -79,7 +83,7 @@ public class SortedPuzzleSet
 
     private void removeNode(PuzzleMap map)
     {
-        statHolder.startTime("removeOPeration");
+        statHolder.startTime("remove operation");
         if (hash.containsKey(map))
         {
             hash.remove(map);
@@ -92,7 +96,7 @@ public class SortedPuzzleSet
             }
         }
         size--;
-        statHolder.endTime("removeOPeration");
+        statHolder.endTime("remove operation time");
     }
 
     public long size()

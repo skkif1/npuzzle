@@ -1,5 +1,6 @@
 package src.algo;
 
+import javafx.util.Pair;
 import src.SortedPuzzleSet;
 import src.StatHolder;
 import src.map.PuzzleMap;
@@ -13,35 +14,43 @@ public class AStar implements Callable {
 
     private PuzzleMap start;
 
-    private SortedPuzzleSet open = new SortedPuzzleSet();
+    private SortedPuzzleSet open;
 
-    private SortedPuzzleSet closed = new SortedPuzzleSet();
+    private SortedPuzzleSet closed;
 
-    public void setInitialMap(PuzzleMap start)
+	private StatHolder holder;
+
+	private String filePath;
+
+	public void setInitialMap(PuzzleMap start, String filePath)
     {
         this.start = start;
+        this.holder = new StatHolder(filePath);
+        this.open = new SortedPuzzleSet(filePath);
+        this.closed = new SortedPuzzleSet(filePath);
+    	this.filePath = filePath;
     }
 
-    private StatHolder statHolder = new StatHolder();
 
     @Override
     public Object call() throws Exception {
-        return run();
-    }
 
-    private PuzzleMap run()
+		return run();
+	}
+
+    private Pair<PuzzleMap, String> run()
     {
-        statHolder.startTime("runExecution" + Thread.currentThread().getName());
-
+		holder.startTime("A* execution time");
         finalState = start.getFinalState();
         open.add(start);
-        while (!open.isEmpty()) {
+        while (!open.isEmpty())
+        {
             PuzzleMap currentNode = open.pollFirst();
 
             if (currentNode.equals(finalState))
             {
-                statHolder.endTime("runExecution" + Thread.currentThread().getName());
-                return currentNode;
+				holder.endTime("A* execution time");
+            	return new Pair<>(currentNode, filePath);
             }
 
             List<PuzzleMap> childNodes = currentNode.getPossibleMoves();
@@ -65,8 +74,9 @@ public class AStar implements Callable {
                 open.add(childNode);
             }
             closed.add(currentNode);
+            holder.iterate("watched node from open list");
         }
-        statHolder.endTime("runExecution" + Thread.currentThread().getName());
-        return null;
+		holder.endTime("A* execution time");
+		return null;
     }
 }
