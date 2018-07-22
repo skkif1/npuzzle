@@ -5,10 +5,7 @@ import src.algo.*;
 import src.input.InputManager;
 import src.map.PuzzleMap;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,28 +13,40 @@ import java.util.concurrent.Future;
 
 public class Main {
 
-    private static final String macOS = "/Users/omotyliu/testMap1";
-
-    private static final String windowsOS = "C:\\Users\\Oleksandr\\Desktop\\UNIT\\testMap.txt";
-
-    private static Set<String> files = new HashSet<>();
-
-    private static IHeuristicFunction heuristicFunction;
+    private static List<Pair<String, IHeuristicFunction>> mapFunction = new ArrayList<>();
 
     public static void main(String[] args)
 	{
-        heuristicFunction = getFunction(args);
+        ArrayList<String > argsList = new ArrayList<>(Arrays.asList(args));
 
-        if (heuristicFunction == null) {
+        try
+        {
+            getFunctions(argsList);
+        }
+        catch (Exception ex)
+        {
             help();
             System.exit(0);
         }
+
         run();
     }
 
-    private static IHeuristicFunction getFunction(String[] args) {
+
+    private static void getFunctions(List<String> args)
+    {
+        for (int i = 0; i < args.size(); i++)
+        {
+            Pair<String, IHeuristicFunction> pair = new Pair<>(args.get(0), getFunction(args.get(1)));
+            mapFunction.add(pair);
+            args.remove(0);
+            args.remove(0);
+        }
+    }
+
+    private static IHeuristicFunction getFunction(String arg) {
         IHeuristicFunction heuristicFunction = null;
-        for (String arg : args) {
+
             if (arg.equalsIgnoreCase("-m")) {
                 heuristicFunction = new ManhattanDistanceHeuristicFunction();
             } else if (arg.equalsIgnoreCase("-e")) {
@@ -45,36 +54,38 @@ public class Main {
             } else if (arg.equalsIgnoreCase("-c")) {
                 heuristicFunction = new ChebyshevDistanceHeuristicFunction();
             }
-            else if (arg.equalsIgnoreCase("-s"))
+            else if (arg.equalsIgnoreCase("-n"))
             {
                 heuristicFunction = new SimpleHeuristicFunction();
-            } else {
-				files.add(arg);
+            }else
+            {
+                throw new RuntimeException();
             }
-        }
-        return heuristicFunction;
+            return heuristicFunction;
     }
 
-    private static void help() {
+    private static void help()
+    {
+        System.out.println("./npuzzle <Path to valid file> <function> ....\n<<Functions>>\n-m : ManhattanDistanceHeuristicFunction\n-e : EuclideanDistanceHeuristicFunction\n-c : ChebyshevDistanceHeuristicFunction\n-n : ManhattanDistanceConflictsHeuristicFunction");
     }
 
     private static void run()
     {
-        ExecutorService pool = Executors.newFixedThreadPool(files.size());
+        ExecutorService pool = Executors.newFixedThreadPool(mapFunction.size());
         ArrayList<Future<Pair<PuzzleMap,String>>> results = new ArrayList<>();
 
-        for (String path : files)
+        for (Pair<String, IHeuristicFunction> pathFunction : mapFunction)
         {
             InputManager manager = new InputManager();
             AStar algo = new AStar();
-            PuzzleMap initialState = checkMap(path, heuristicFunction, manager);
-            algo.setInitialMap(initialState, path);
+            PuzzleMap initialState = checkMap(pathFunction.getKey(), pathFunction.getValue(), manager);
+            algo.setInitialMap(initialState, pathFunction.getKey());
             Future<Pair<PuzzleMap, String>> res = pool.submit(algo);
             results.add(res);
         }
 
         int done = 0;
-        while (done != files.size())
+        while (done != mapFunction.size())
         {
             done = 0;
             for (Future<Pair<PuzzleMap,String>> result : results)
