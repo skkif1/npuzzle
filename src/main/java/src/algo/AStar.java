@@ -58,6 +58,7 @@ public class AStar implements Callable {
             for (PuzzleMap childNode : childNodes)
             {
                 PuzzleMap temp;
+                holder.iterate("number of created nodes");
 
                 if (open.contains(childNode)) {
                     temp = open.get(childNode);
@@ -71,10 +72,11 @@ public class AStar implements Callable {
                     if (temp.compareTo(childNode) <= 0)
                         continue;
                 }
+                holder.iterate("max number of created nodes in memory (complexity in size)");
                 open.add(childNode);
             }
             closed.add(currentNode);
-            holder.iterate("watched node from open list");
+            holder.iterate("watched node from open list (complexity in time)");
         }
 		holder.endTime("A* execution time");
 		return null;

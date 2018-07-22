@@ -26,6 +26,8 @@ public class StatHolder
 
     private HashMap<String, Long> methodIterator = new HashMap<>();
 
+    private HashMap<String, Object> methodInfo = new HashMap<>();
+
 
     public String getFilePath() {
         return filePath;
@@ -50,6 +52,16 @@ public class StatHolder
             methodMethodExecTime.put(method, t);
             t.start();
         }
+    }
+
+    public void putInfo (String method, Object info)
+    {
+        methodInfo.put(method, info);
+    }
+
+    public Object getMethodInfo(String method)
+    {
+        return methodInfo.get(method);
     }
 
     public void endTime(String method)

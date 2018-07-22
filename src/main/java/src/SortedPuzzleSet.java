@@ -28,7 +28,7 @@ public class SortedPuzzleSet
 
     public void add(PuzzleMap node)
     {
-        statHolder.startTime("add operation");
+        statHolder.startTime("add operation time");
 
         if (hash.containsKey(node))
         {
@@ -49,7 +49,7 @@ public class SortedPuzzleSet
             sameComplexity.add(node);
         }
         order.add(node.getCoast());
-        statHolder.endTime("add operation");
+        statHolder.endTime("add operation time");
     }
 
 
@@ -61,13 +61,13 @@ public class SortedPuzzleSet
 
     public PuzzleMap pollFirst()
     {
-        statHolder.startTime("poll operation");
+        statHolder.startTime("poll operation time");
         int first = order.first();
         List<PuzzleMap> sameComplexity = complexityMap.get(first);
 
         PuzzleMap res = sameComplexity.get(0);
         removeNode(res);
-        statHolder.endTime("poll operation");
+        statHolder.endTime("poll operation time");
         return res;
     }
 
@@ -83,7 +83,7 @@ public class SortedPuzzleSet
 
     private void removeNode(PuzzleMap map)
     {
-        statHolder.startTime("remove operation");
+        statHolder.startTime("remove operation time");
         if (hash.containsKey(map))
         {
             hash.remove(map);
