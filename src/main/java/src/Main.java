@@ -13,7 +13,9 @@ import java.util.concurrent.Future;
 
 public class Main {
 
-    private static List<Pair<String, IHeuristicFunction>> mapFunction = new ArrayList<>();
+    private static Set<Pair<String, IHeuristicFunction>> mapFunction = new HashSet<>();
+
+    private static ResultLogger logger = new ResultLogger();
 
     public static void main(String[] args) {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
@@ -33,7 +35,6 @@ public class Main {
         }
     }
 
-
     private static void getFunctions(List<String> args) {
         for (int i = 0; i < args.size(); i++) {
             Pair<String, IHeuristicFunction> pair = new Pair<>(args.get(0), getFunction(args.get(1)));
@@ -41,23 +42,7 @@ public class Main {
             args.remove(0);
             args.remove(0);
         }
-    }
 
-    private static IHeuristicFunction getFunction(String arg) {
-        IHeuristicFunction heuristicFunction = null;
-
-        if (arg.equalsIgnoreCase("-m")) {
-            heuristicFunction = new ManhattanDistanceHeuristicFunction();
-        } else if (arg.equalsIgnoreCase("-e")) {
-            heuristicFunction = new EuclideanDistanceHeuristicFunction();
-        } else if (arg.equalsIgnoreCase("-c")) {
-            heuristicFunction = new ChebyshevDistanceHeuristicFunction();
-        } else if (arg.equalsIgnoreCase("-n")) {
-            heuristicFunction = new SimpleHeuristicFunction();
-        } else {
-            throw new RuntimeException();
-        }
-        return heuristicFunction;
     }
 
     private static void help() {
@@ -68,11 +53,12 @@ public class Main {
         ExecutorService pool = Executors.newFixedThreadPool(mapFunction.size());
         ArrayList<Future<Pair<PuzzleMap, String>>> results = new ArrayList<>();
 
-        for (Pair<String, IHeuristicFunction> pathFunction : mapFunction) {
+        for (Pair<String, IHeuristicFunction> pathFunction : mapFunction)
+        {
             InputManager manager = new InputManager();
             AStar algo = new AStar();
             PuzzleMap initialState = checkMap(pathFunction.getKey(), pathFunction.getValue(), manager);
-            algo.setInitialMap(initialState, pathFunction.getKey());
+            algo.setInitialMap(initialState, pathFunction.getKey() + " " + initialState.getHeuristicFunction().getName());
             Future<Pair<PuzzleMap, String>> res = pool.submit(algo);
             results.add(res);
         }
@@ -89,13 +75,21 @@ public class Main {
         printRes(results);
     }
 
+    private static IHeuristicFunction getFunction(String arg) {
+        IHeuristicFunction heuristicFunction = null;
 
-    private static void printRes(List<Future<Pair<PuzzleMap, String>>> results) throws ExecutionException, InterruptedException {
-        for (Future<Pair<PuzzleMap, String>> result : results) {
-            result.get().getKey().printParentLine();
-            printMapRes(result);
+        if (arg.equalsIgnoreCase("-m")) {
+            heuristicFunction = new ManhattanDistanceHeuristicFunction();
+        } else if (arg.equalsIgnoreCase("-e")) {
+            heuristicFunction = new EuclideanDistanceHeuristicFunction();
+        } else if (arg.equalsIgnoreCase("-c")) {
+            heuristicFunction = new ChebyshevDistanceHeuristicFunction();
+        } else if (arg.equalsIgnoreCase("-n")) {
 
+        } else {
+            throw new RuntimeException();
         }
+        return heuristicFunction;
     }
 
     private static PuzzleMap checkMap(String path, IHeuristicFunction heuristicFunction, InputManager manager) {
@@ -116,16 +110,29 @@ public class Main {
         return initialState;
     }
 
+    private static void printRes(List<Future<Pair<PuzzleMap, String>>> results) throws ExecutionException, InterruptedException {
+        for (Future<Pair<PuzzleMap, String>> result : results) {
+            result.get().getKey().printParentLine();
+            printMapRes(result);
+        }
+    }
+
     private static void printMapRes(Future<Pair<PuzzleMap, String>> res) throws ExecutionException, InterruptedException {
 
-        System.out.println("stat for map -> " + res.get().getValue());
-        System.out.println("depth of solution : " + res.get().getKey().getH());
+        String map = "stat for map -> " + res.get().getValue();
+        String depth = "depth of solution : " + res.get().getKey().getH();
+        System.out.println(map);
+        System.out.println(depth);
+        logger.logResult(map + "\n");
+        logger.logResult(depth + "\n");
+
         for (StatHolder statHolder : StatHolder.getHolders()) {
             if (statHolder.getFilePath().equalsIgnoreCase(res.get().getValue())) {
-                statHolder.printStat();
+                statHolder.printStat(logger);
             }
         }
 
+        logger.logResult("\n");
         System.out.println();
     }
 

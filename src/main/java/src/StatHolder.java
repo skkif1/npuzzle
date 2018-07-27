@@ -107,17 +107,19 @@ public class StatHolder
         }
     }
 
-    public void printStat()
+    public void printStat(ResultLogger logger)
     {
 
         for (Map.Entry<String, Timer> stringTimerEntry : methodMethodExecTime.entrySet())
         {
             System.out.println(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue().value);
+            logger.logResult(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue().value + "\n");
         }
 
         for (Map.Entry<String, Long> stringTimerEntry : methodIterator.entrySet())
         {
             System.out.println(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue());
+            logger.logResult(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue() + "\n");
         }
     }
 

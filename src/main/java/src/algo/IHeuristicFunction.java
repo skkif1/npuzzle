@@ -11,6 +11,8 @@ public interface IHeuristicFunction {
 	 * */
 	int calculateGCoast(PuzzleMap state, PuzzleMap finalState);
 
+	String getName();
+
 	default void fillCurrentAndFinalMapsOfState(PuzzleMap state, PuzzleMap finalState,
 												Map<Integer, Pair> currentStatesMap, Map<Integer, Pair> finalStatesMap){
 		for (int i = 0; i < state.size; i++) {

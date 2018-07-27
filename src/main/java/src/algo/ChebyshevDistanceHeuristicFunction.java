@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChebyshevDistanceHeuristicFunction implements IHeuristicFunction {
+
+    String name = "ChebyshevDistanceHeuristicFunction";
+
     @Override
     public int calculateGCoast(PuzzleMap state, PuzzleMap finalState) {
         int gCoast = 0;
@@ -22,5 +25,26 @@ public class ChebyshevDistanceHeuristicFunction implements IHeuristicFunction {
             gCoast += Math.max(deltaX, deltaY);
         }
         return gCoast;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChebyshevDistanceHeuristicFunction that = (ChebyshevDistanceHeuristicFunction) o;
+
+        return name != null ? name.equals(that.name) : that.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

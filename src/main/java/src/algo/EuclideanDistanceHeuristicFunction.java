@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class EuclideanDistanceHeuristicFunction implements IHeuristicFunction {
 
+    String name = "EuclideanDistanceHeuristicFunction";
+
     @Override
     public int calculateGCoast(PuzzleMap state, PuzzleMap finalState) {
         int gCoast = 0;
@@ -20,5 +22,25 @@ public class EuclideanDistanceHeuristicFunction implements IHeuristicFunction {
                     Math.pow(((int) entry.getValue().getValue()) - ((int) finalStatesMap.get(entry.getKey()).getValue()), 2));
         }
         return gCoast;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EuclideanDistanceHeuristicFunction that = (EuclideanDistanceHeuristicFunction) o;
+
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

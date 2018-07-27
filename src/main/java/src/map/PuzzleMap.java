@@ -288,4 +288,10 @@ public class PuzzleMap implements Comparable {
         }
 		return (this.coast - ((PuzzleMap) o).coast) < 1 ? -1 : 1;
 	}
+
+
+	public IHeuristicFunction getHeuristicFunction()
+	{
+		return heuristicFunction;
+	}
 }

@@ -8,6 +8,8 @@ import java.util.*;
 public class ManhattanDistanceHeuristicFunction implements IHeuristicFunction
 {
 
+    String name = "ManhattanDistanceHeuristicFunction";
+
     @Override
     public int calculateGCoast(PuzzleMap state, PuzzleMap finalState) {
         int gCoast = 0;
@@ -19,5 +21,26 @@ public class ManhattanDistanceHeuristicFunction implements IHeuristicFunction
                     Math.abs(((int) entry.getValue().getValue()) - ((int) finalStatesMap.get(entry.getKey()).getValue()));
         }
         return gCoast;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ManhattanDistanceHeuristicFunction that = (ManhattanDistanceHeuristicFunction) o;
+
+        return name != null ? name.equals(that.name) : that.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }
