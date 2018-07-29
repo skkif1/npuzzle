@@ -22,7 +22,14 @@ public class Main {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
 
         try {
-            getFunctions(argsList);
+            if (isFileList(argsList))
+            {
+                mapFunction.addAll(new FileLoader().getFiles(getFileListPath(argsList)));
+            }
+            else
+            {
+                getFunctions(argsList);
+            }
         } catch (Exception ex) {
             help();
             System.exit(0);
@@ -57,7 +64,7 @@ public class Main {
     }
 
     private static void help() {
-        System.out.println("./npuzzle <Path to valid file> <function> ....\n<<Functions>>\n-m : ManhattanDistanceHeuristicFunction\n-e : EuclideanDistanceHeuristicFunction\n-c : ChebyshevDistanceHeuristicFunction\n-n : ManhattanDistanceConflictsHeuristicFunction");
+        System.out.println("./npuzzle <Path to valid file> <function> ....\n<<Functions>>\n-m : ManhattanDistanceHeuristicFunction\n-e : EuclideanDistanceHeuristicFunction\n-c : ChebyshevDistanceHeuristicFunction");
     }
 
     private static void run() throws ExecutionException, InterruptedException {
@@ -157,17 +164,26 @@ public class Main {
     private static boolean isFileList(List<String> args)
     {
         boolean is = false;
-        boolean depth = false;
 
         for (String arg : args)
         {
             if (arg.equalsIgnoreCase(FILE_LIST))
                 is = true;
-            if (StringUtils.isNumeric())
-                is = true;
-
         }
+        if (args.size() != 2)
+            throw new InputManagerException("in fileList mode <" + FILE_LIST + "> <path to file>");
+        return is;
+    }
 
+    private static String getFileListPath(List<String> args)
+    {
+        for (String arg : args)
+        {
+            if (arg.equals(FILE_LIST))
+                continue;
+            return arg;
+        }
+        throw new InputManagerException("in fileList mode <" + FILE_LIST + "> <path to file>");
     }
 
 
