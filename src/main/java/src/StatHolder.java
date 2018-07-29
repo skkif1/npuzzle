@@ -91,29 +91,29 @@ public class StatHolder
         long temp = 0;
 
 
-        public Timer()
+        Timer()
         {
         }
 
-        public void start()
+        void start()
         {
-            temp = System.currentTimeMillis();
+            temp = System.nanoTime();
         }
 
-        public void stop()
+        void stop()
         {
-            value = System.currentTimeMillis() - temp;
+            value = System.nanoTime() - temp;
             temp = 0;
         }
     }
 
-    public void printStat(ResultLogger logger)
+    void printStat(ResultLogger logger)
     {
 
         for (Map.Entry<String, Timer> stringTimerEntry : methodMethodExecTime.entrySet())
         {
-            System.out.println(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue().value);
-            logger.logResult(stringTimerEntry.getKey() + " : " + stringTimerEntry.getValue().value + "\n");
+            System.out.println(stringTimerEntry.getKey() + " : " + timeValueToString(stringTimerEntry.getValue().value));
+            logger.logResult(stringTimerEntry.getKey() + " : " + timeValueToString(stringTimerEntry.getValue().value) + "\n");
         }
 
         for (Map.Entry<String, Long> stringTimerEntry : methodIterator.entrySet())
@@ -123,4 +123,15 @@ public class StatHolder
         }
     }
 
+    private String timeValueToString(long value)
+    {
+        long seconds = value / 1000 / 1000 / 1000 / 1000;
+        long milliseconds = value / 1000 / 1000;
+
+        if (seconds != 0)
+            return seconds + " seconds";
+        if (milliseconds != 0)
+            return milliseconds + " milliseconds";
+        return value + " nanosecods";
+    }
 }
