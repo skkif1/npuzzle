@@ -6,10 +6,7 @@ import src.input.InputManager;
 import src.map.PuzzleMap;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class Main {
 
@@ -51,7 +48,7 @@ public class Main {
 
     private static void run() throws ExecutionException, InterruptedException {
         ExecutorService pool = Executors.newFixedThreadPool(mapFunction.size());
-        ArrayList<Future<Pair<PuzzleMap, String>>> results = new ArrayList<>();
+        List<Future<Pair<PuzzleMap, String>>> results = new ArrayList<>();
 
         for (Pair<String, IHeuristicFunction> pathFunction : mapFunction)
         {
@@ -63,16 +60,26 @@ public class Main {
             results.add(res);
         }
 
+        Set<Future<Pair<PuzzleMap, String>>> temp  = new HashSet<>();
+
         int done = 0;
         while (done != mapFunction.size()) {
             done = 0;
             for (Future<Pair<PuzzleMap, String>> result : results) {
                 if (result.isDone())
+                {
                     done++;
+                    if (!temp.contains(result))
+                    {
+                        printRes(result);
+                        temp.add(result);
+                    }
+                }
+
+
             }
         }
         pool.shutdown();
-        printRes(results);
     }
 
     private static IHeuristicFunction getFunction(String arg) {
@@ -84,8 +91,6 @@ public class Main {
             heuristicFunction = new EuclideanDistanceHeuristicFunction();
         } else if (arg.equalsIgnoreCase("-c")) {
             heuristicFunction = new ChebyshevDistanceHeuristicFunction();
-        } else if (arg.equalsIgnoreCase("-n")) {
-
         } else {
             throw new RuntimeException();
         }
@@ -110,11 +115,10 @@ public class Main {
         return initialState;
     }
 
-    private static void printRes(List<Future<Pair<PuzzleMap, String>>> results) throws ExecutionException, InterruptedException {
-        for (Future<Pair<PuzzleMap, String>> result : results) {
+    private static void printRes(Future<Pair<PuzzleMap, String>> result) throws ExecutionException, InterruptedException {
+
             result.get().getKey().printParentLine();
             printMapRes(result);
-        }
     }
 
     private static void printMapRes(Future<Pair<PuzzleMap, String>> res) throws ExecutionException, InterruptedException {
