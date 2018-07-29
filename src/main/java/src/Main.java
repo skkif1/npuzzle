@@ -3,6 +3,7 @@ package src;
 import javafx.util.Pair;
 import src.algo.*;
 import src.input.InputManager;
+import src.input.InputManagerException;
 import src.map.PuzzleMap;
 
 import java.util.*;
@@ -27,12 +28,22 @@ public class Main {
         try {
             run();
         } catch (Exception e) {
-            System.out.println("something goes wrong (seems we cant solve this task). Ask why!");
+            if (e instanceof  InputManagerException)
+            {
+                System.out.println(e.getMessage());
+            } else
+            {
+                System.out.println("something goes wrong (seems we cant solve this task). Ask why!");
+            }
             System.exit(0);
         }
     }
 
     private static void getFunctions(List<String> args) {
+        if (mapFunction.size() > 10)
+        {
+            throw new InputManagerException("max number of maps is 10");
+        }
         for (int i = 0; i < args.size(); i++) {
             Pair<String, IHeuristicFunction> pair = new Pair<>(args.get(0), getFunction(args.get(1)));
             mapFunction.add(pair);
@@ -92,7 +103,7 @@ public class Main {
         } else if (arg.equalsIgnoreCase("-c")) {
             heuristicFunction = new ChebyshevDistanceHeuristicFunction();
         } else {
-            throw new RuntimeException();
+            throw new InputManagerException("bad function argument");
         }
         return heuristicFunction;
     }
