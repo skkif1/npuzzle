@@ -1,6 +1,7 @@
 package src;
 
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 import src.algo.*;
 import src.input.InputManager;
 import src.input.InputManagerException;
@@ -14,6 +15,8 @@ public class Main {
     private static Set<Pair<String, IHeuristicFunction>> mapFunction = new HashSet<>();
 
     private static ResultLogger logger = new ResultLogger();
+
+    private static String FILE_LIST = "-fileList";
 
     public static void main(String[] args) {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
@@ -93,7 +96,7 @@ public class Main {
         pool.shutdown();
     }
 
-    private static IHeuristicFunction getFunction(String arg) {
+    static IHeuristicFunction getFunction(String arg) {
         IHeuristicFunction heuristicFunction = null;
 
         if (arg.equalsIgnoreCase("-m")) {
@@ -149,6 +152,22 @@ public class Main {
 
         logger.logResult("\n");
         System.out.println();
+    }
+
+    private static boolean isFileList(List<String> args)
+    {
+        boolean is = false;
+        boolean depth = false;
+
+        for (String arg : args)
+        {
+            if (arg.equalsIgnoreCase(FILE_LIST))
+                is = true;
+            if (StringUtils.isNumeric())
+                is = true;
+
+        }
+
     }
 
 
