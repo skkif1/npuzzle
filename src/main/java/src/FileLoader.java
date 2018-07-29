@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 public class FileLoader
 {
 
-    static String file = "/Users/omotyliu/files";
-
     Set<Pair<String, IHeuristicFunction>> getFiles(String file)
     {
         try
@@ -34,11 +32,5 @@ public class FileLoader
     {
         line = StringUtils.trim(line);
         return new Pair<>(StringUtils.substringBefore(line, " "), Main.getFunction(StringUtils.substringAfter(line , " ")));
-    }
-
-
-    public static void main(String[] args)
-    {
-        new FileLoader().getFiles(file);
     }
 }
