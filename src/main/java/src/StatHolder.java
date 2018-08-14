@@ -132,6 +132,6 @@ public class StatHolder
             return seconds + " seconds";
         if (milliseconds != 0)
             return milliseconds + " milliseconds";
-        return value + " nanosecods";
+        return value + " nanoseconds";
     }
 }
