@@ -205,7 +205,7 @@ public class PuzzleMap implements Comparable {
 	{
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				out.print(map[i][j] + " ");
+				out.print(map[i][j] + "\t");
 			}
 
 			out.println();

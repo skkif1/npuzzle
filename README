@@ -1,2 +1,2 @@
 mvn clean install
-java -cp target/npuzzle-1.0-SNAPSHOT.jar src.Main a.txt -m
+java -cp target/npuzzle-1.0-SNAPSHOT.jar src.Main tests/a.txt -m
